@@ -1,11 +1,11 @@
-package com.backbase.kalah.service;
+package com.backbase.kalah.ui;
 
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
 @RestController("kalah-rest-api")
-public class KalahRestApi {
+public class RestUserInterface {
     @PostMapping(path = "/games", consumes = "application/json", produces = "application/json")
     public String createGame(HttpServletRequest request) {
         return "";
