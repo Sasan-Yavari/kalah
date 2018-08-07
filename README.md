@@ -1,12 +1,16 @@
-# Tic Tac Toe 2.0
+# Kalah
 
-We want to bring the pen-and-paper game Tic-tac-toe to the digital age,
-but with a little twist: the size of the playfield should be
-configurable between 3x3 and 10x10. And we also want the symbols
-(usually O and X) to be configurable. Also it should be for 3 players
-instead of just 2.
+Each of the two players has ​ **​ six pits​ ** ​ in front of him/her. To the right of the six pits, each player has a larger pit, his Kalah or house.
 
-This program created based on [Metronom](https://www.metronom.com/) home assignment task for hiring process.
+At the start of the game, six stones are put in each pit.
+
+The player who begins picks up all the stones in any of their own pits, and sows the stones on to the right, one in each of the following pits, including his own Kalah. No stones are put in the opponent's' Kalah. If the players last stone lands in his own Kalah, he gets another turn. This can be repeated any number of times before it's the other player's turn.
+
+When the last stone lands in an own empty pit, the player captures this stone and all stones in the opposite pit (the other players' pit) and puts them in his own Kalah.
+
+The game is over as soon as one of the sides run out of stones. The player who still has stones in his/her pits keeps them and puts them in his/hers Kalah. The winner of the game is the player who has the most stones in his Kalah.
+
+This program created based on [Backbase](https://backbase.com/) home assignment task for hiring process.
 
 ## Getting Started
 
@@ -25,31 +29,31 @@ You need followings to run the program:
 
 First of all run following commands to build the project:
 ```
-git clone https://github.com/Sasan-Yavari/tic-tac-toe.git
-cd tic-tac-toe
+git clone https://github.com/Sasan-Yavari/kalah.git
+cd kalah
 gradle installDist
 ```
 
 Now you have the final build inside the following directory:
 ```
-tic-tac-toe/build/install/tic-tac-toe
+kalah/build/install/kalah
 ```
 
 Now you can run the project using following command:
 ```
-cd build/install/tic-tac-toe/bin
+cd build/install/kalah/bin
 ./run.sh
 ```
 
 or simply
 ```
-cd build/install/tic-tac-toe/bin
-java -jar tic-tac-toe.jar
+cd build/install/kalah/bin
+java -jar kalah.jar
 ```
 
 You can pass the configuration file path to the jar file like this:
 ```
-java -jar tic-tac-toe.jar PATH_TO_CONFIG_FILE
+java -jar kalah.jar PATH_TO_CONFIG_FILE
 ```
 
 otherwise, the application will use the `Config.properties` file that exists inside the `conf` directory.
@@ -63,7 +67,7 @@ gradle test
 
 ## Deployment
 
-Copy the `tic-tac-toe` directory from `build/install` to where ever you want to deploy the build. This directory is the final runnable version of project.
+Copy the `kalah` directory from `build/install` to where ever you want to deploy the build. This directory is the final runnable version of project.
 
 ## Built With
 

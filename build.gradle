@@ -1,9 +1,6 @@
 apply plugin: 'java'
 apply plugin: 'application'
 
-/**
- * TODO: Set your project group and main class name here
- */
 group 'com.backbase.homeassignment'
 mainClassName = "com.backbase.kalah.Kalah"
 
@@ -12,10 +9,6 @@ repositories {
 }
 
 dependencies {
-    /**
-     * TODO: Put your dependencies here with the following format:
-     * GroupId:ArtifactName:Version
-     */
     testCompile 'junit:junit:4.12'
     testCompile 'org.jmockit:jmockit:1.39'
     compile 'org.springframework.boot:spring-boot-starter-websocket:1.5.4.RELEASE'
