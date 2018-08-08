@@ -45,13 +45,13 @@ public class BoardInitializeTestExceptions {
     public int stoneCount;
 
     @Test(expected = InvalidPitCountException.class)
-    public void testBoardCreationInvalidPitCount() throws InvalidPitCountException, InvalidStoneCountException {
+    public void testBoardCreationInvalidPitCount() {
         Assume.assumeTrue(type == Type.INVALID_PIT_COUNT_EXCEPTION);
         new Board(id, pitCount, stoneCount);
     }
 
     @Test(expected = InvalidStoneCountException.class)
-    public void testBoardCreationInvalidStoneCount() throws InvalidPitCountException, InvalidStoneCountException {
+    public void testBoardCreationInvalidStoneCount() {
         Assume.assumeTrue(type == Type.INVALID_STONE_COUNT_EXCEPTION);
         new Board(id, pitCount, stoneCount);
     }

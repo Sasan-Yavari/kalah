@@ -2,11 +2,12 @@ package com.backbase.kalah.entity;
 
 import com.backbase.kalah.entity.enums.KalahType;
 import com.backbase.kalah.entity.enums.PitType;
-import com.backbase.kalah.exceptions.InvalidPitCountException;
+import com.backbase.kalah.entity.enums.PlayerType;
 import com.backbase.kalah.exceptions.InvalidPitIdException;
-import com.backbase.kalah.exceptions.InvalidStoneCountException;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.stream.IntStream;
 
 import static org.junit.Assert.*;
 
@@ -14,12 +15,12 @@ public class BoardTest {
     private Board board;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         board = new Board(1, 14, 6);
     }
 
     @Test
-    public void testBoard() throws InvalidPitCountException, InvalidStoneCountException {
+    public void testBoard() {
         Board board = new Board(1, 14, 6);
         assertArrayEquals(new int[]{6, 6, 6, 6, 6, 6, 0, 6, 6, 6, 6, 6, 6, 0}, board.stream().toArray());
 
@@ -38,32 +39,22 @@ public class BoardTest {
     }
 
     @Test
-    public void getPitCount() {
-        assertEquals(14, board.getPitCount());
+    public void getPlayer1LastPitIndex() {
+        assertEquals(6, board.getPlayer1LastPitIndex());
     }
 
     @Test
-    public void getPlayer1PitStart() {
-        assertEquals(0, board.getPlayer1PitStart());
+    public void getPlayer2FirstPitIndex() {
+        assertEquals(7, board.getPlayer2FirstPitIndex());
     }
 
     @Test
-    public void getPlayer1PitEnd() {
-        assertEquals(6, board.getPlayer1PitEnd());
+    public void getPlayer2LastPitIndex() {
+        assertEquals(13, board.getPlayer2LastPitIndex());
     }
 
     @Test
-    public void getPlayer2PitStart() {
-        assertEquals(7, board.getPlayer2PitStart());
-    }
-
-    @Test
-    public void getPlayer2PitEnd() {
-        assertEquals(13, board.getPlayer2PitEnd());
-    }
-
-    @Test
-    public void getPitValue() throws InvalidPitIdException {
+    public void getPitValue() {
         assertEquals(6, board.getPitValue(0));
         assertEquals(6, board.getPitValue(1));
         assertEquals(6, board.getPitValue(2));
@@ -100,7 +91,7 @@ public class BoardTest {
     }
 
     @Test
-    public void getOppositePitId() throws InvalidPitIdException {
+    public void getOppositePitId() {
         assertEquals(12, board.getOppositePitId(0));
         assertEquals(2, board.getOppositePitId(10));
         assertEquals(5, board.getOppositePitId(7));
@@ -129,7 +120,7 @@ public class BoardTest {
     }
 
     @Test
-    public void move() throws InvalidPitIdException {
+    public void move() {
         //                   0  1  2  3  4  5  6  7  8  9 10 11 12 13
         //                  {6, 6, 6, 6, 6, 6, 0, 6, 6, 6, 6, 6, 6, 0}; // initial values
         int[] moveResult1 = {0, 7, 7, 7, 7, 7, 1, 6, 6, 6, 6, 6, 6, 0}; // after move(0)
@@ -187,15 +178,15 @@ public class BoardTest {
     }
 
     @Test
-    public void getPitType() throws InvalidPitIdException {
-        assertEquals(PitType.PLAYER1_KALAH, board.getPitType(6));
-        assertEquals(PitType.PLAYER2_KALAH, board.getPitType(13));
+    public void getPitType() {
+        assertEquals(PitType.PLAYER_1_KALAH, board.getPitType(6));
+        assertEquals(PitType.PLAYER_2_KALAH, board.getPitType(13));
 
         for (int pitId = 0; pitId < 6; pitId++)
-            assertEquals(PitType.PLAYER1_PIT, board.getPitType(pitId));
+            assertEquals(PitType.PLAYER_1_PIT, board.getPitType(pitId));
 
         for (int pitId = 7; pitId < 13; pitId++)
-            assertEquals(PitType.PLAYER2_PIT, board.getPitType(pitId));
+            assertEquals(PitType.PLAYER_2_PIT, board.getPitType(pitId));
 
         int exceptionCount = 0;
 
@@ -217,25 +208,81 @@ public class BoardTest {
     }
 
     @Test
-    public void moveStonesToKalah() throws InvalidPitIdException {
-        board.moveStonesToKalah(0, KalahType.PLAYER1_KALAH);
+    public void getPitPlayer() {
+        for (int pitId = 0; pitId <= 6; pitId++)
+            assertEquals(PlayerType.PLAYER_1, board.getPitPlayer(pitId));
+
+        for (int pitId = 7; pitId <= 13; pitId++)
+            assertEquals(PlayerType.PLAYER_2, board.getPitPlayer(pitId));
+
+        int exceptionCount = 0;
+
+        try {
+            board.getPitPlayer(-1);
+        } catch (Exception ex) {
+            assertTrue(ex instanceof InvalidPitIdException);
+            exceptionCount++;
+        }
+
+        try {
+            board.getPitPlayer(14);
+        } catch (Exception ex) {
+            assertTrue(ex instanceof InvalidPitIdException);
+            exceptionCount++;
+        }
+
+        assertEquals(2, exceptionCount);
+    }
+
+    @Test
+    public void moveStonesToKalah() {
+        board.moveStonesToKalah(0, KalahType.PLAYER_1_KALAH);
         assertEquals(0, board.getPitValue(0));
         assertEquals(6, board.getPitValue(6));
         assertEquals(0, board.getPitValue(13));
 
-        board.moveStonesToKalah(0, KalahType.PLAYER1_KALAH);
+        board.moveStonesToKalah(0, KalahType.PLAYER_1_KALAH);
         assertEquals(0, board.getPitValue(0));
         assertEquals(6, board.getPitValue(6));
         assertEquals(0, board.getPitValue(13));
 
-        board.moveStonesToKalah(1, KalahType.PLAYER2_KALAH);
+        board.moveStonesToKalah(1, KalahType.PLAYER_2_KALAH);
         assertEquals(0, board.getPitValue(1));
         assertEquals(6, board.getPitValue(6));
         assertEquals(6, board.getPitValue(13));
 
-        board.moveStonesToKalah(0, KalahType.PLAYER2_KALAH);
+        board.moveStonesToKalah(0, KalahType.PLAYER_2_KALAH);
         assertEquals(0, board.getPitValue(1));
         assertEquals(6, board.getPitValue(6));
         assertEquals(6, board.getPitValue(13));
+    }
+
+    @Test
+    public void hasAnyStone() {
+        assertTrue(board.hasAnyStone(PlayerType.PLAYER_1));
+        assertTrue(board.hasAnyStone(PlayerType.PLAYER_2));
+
+        Board board = new Board(1, new int[]{0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 6});
+        assertFalse(board.hasAnyStone(PlayerType.PLAYER_1));
+        assertFalse(board.hasAnyStone(PlayerType.PLAYER_2));
+    }
+
+    @Test
+    public void flushToKalah() {
+        board.flushToKalah(PlayerType.PLAYER_1);
+
+        IntStream.range(0, board.getPlayer1LastPitIndex()).forEach(pitId -> assertEquals(0, board.getPitValue(pitId)));
+        IntStream.range(board.getPlayer2FirstPitIndex(), board.getPlayer2LastPitIndex()).forEach(pitId -> assertEquals(6, board.getPitValue(pitId)));
+
+        assertEquals(36, board.getPitValue(board.getPlayer1LastPitIndex()));
+        assertEquals(0, board.getPitValue(board.getPlayer2LastPitIndex()));
+
+        board.flushToKalah(PlayerType.PLAYER_2);
+
+        IntStream.range(0, board.getPlayer1LastPitIndex()).forEach(pitId -> assertEquals(0, board.getPitValue(pitId)));
+        IntStream.range(board.getPlayer2FirstPitIndex(), board.getPlayer2LastPitIndex()).forEach(pitId -> assertEquals(0, board.getPitValue(pitId)));
+
+        assertEquals(36, board.getPitValue(board.getPlayer1LastPitIndex()));
+        assertEquals(36, board.getPitValue(board.getPlayer2LastPitIndex()));
     }
 }

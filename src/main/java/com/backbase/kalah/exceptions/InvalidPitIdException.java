@@ -1,6 +1,6 @@
 package com.backbase.kalah.exceptions;
 
-public class InvalidPitIdException extends Exception {
+public class InvalidPitIdException extends RuntimeException {
     public InvalidPitIdException(String message) {
         super(message);
     }

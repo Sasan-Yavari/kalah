@@ -35,13 +35,13 @@ public class BoardLoadTestExceptions {
     public int[] pits;
 
     @Test(expected = InvalidPitCountException.class)
-    public void testBoardCreationInvalidPitCount() throws InvalidPitCountException, NullPointerException {
+    public void testBoardCreationInvalidPitCount() {
         Assume.assumeTrue(type == Type.INVALID_PIT_COUNT_EXCEPTION);
         new Board(id, pits);
     }
 
     @Test(expected = NullPointerException.class)
-    public void testBoardCreationInvalidStoneCount() throws InvalidPitCountException, NullPointerException {
+    public void testBoardCreationInvalidStoneCount() {
         Assume.assumeTrue(type == Type.NULL_POINTER_EXCEPTION);
         new Board(id, pits);
     }

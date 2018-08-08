@@ -8,3 +8,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - `Board` entity added
 - Test added for Board 
+- Game controller added
