@@ -12,6 +12,26 @@ The game is over as soon as one of the sides run out of stones. The player who s
 
 This program created based on [Backbase](https://backbase.com/) home assignment task for hiring process.
 
+## Design
+
+All the classes inside this program are created to be testable, readable and maintainable and the program itself is easy to deploy.
+I am tried to follow `KISS` and `Clean Architecture` principles.
+
+Followings are the packages and layers of the program:
+
+- `game` package is the main package for game domain. We can access to a game using an implementation of `DataAccess` class.
+This package contains `BoardEntity` class as the main entity of the game and the `Controller` class as the controller layer of the game.
+Also the `DataAccess` interface is the database layer entry point. Any type of `DataAccess` can be implemented to handle the data storage process.
+Users of `DataAccess` does not know anything about the implementation according to Clean Architecture principles.
+
+- `ui` layer is the highest layer that depends on almost everything and we can change it easily because no layer is depended on it.
+RESTFull api `RestUserInterface` implemented as the main interaction point with the game but we can implement other types of
+user interfaces like graphical ones.  
+
+### Design Patterns
+
+- `InMemoryDataAccess` is implemented according to `Singleton` pattern.
+
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
