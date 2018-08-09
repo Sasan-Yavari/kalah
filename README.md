@@ -71,20 +71,6 @@ cd build/install/kalah/bin
 java -jar kalah.jar
 ```
 
-You can pass the configuration file path to the jar file like this:
-```
-java -jar kalah.jar PATH_TO_CONFIG_FILE
-```
-
-otherwise, the application will use the `Config.properties` file that exists inside the `conf` directory.
-
-## Running the tests
-
-In order to run tests, inside the root of the project, run the following command:
-```
-gradle test
-```
-
 ## Deployment
 
 Copy the `kalah` directory from `build/install` to where ever you want to deploy the build. This directory is the final runnable version of project.
@@ -95,4 +81,4 @@ Copy the `kalah` directory from `build/install` to where ever you want to deploy
 
 ## Authors
 
-* **Sasan Yavari** - *Initial work* - [Sasan-Yavari](https://github.com/Sasan-Yavari)
+* **Sasan Yavari** - [Sasan-Yavari](https://github.com/Sasan-Yavari)

@@ -1,1 +1,1 @@
-Kalah
+6-stone, 14-pits implementation of Kalah game
