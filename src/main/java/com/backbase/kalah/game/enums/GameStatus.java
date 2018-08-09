@@ -1,4 +1,4 @@
-package com.backbase.kalah.controller.enums;
+package com.backbase.kalah.game.enums;
 
 public enum GameStatus {
     RUNNING,

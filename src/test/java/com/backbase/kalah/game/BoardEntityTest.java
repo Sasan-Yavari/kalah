@@ -1,51 +1,39 @@
-package com.backbase.kalah.entity;
+package com.backbase.kalah.game;
 
-import com.backbase.kalah.entity.enums.KalahType;
-import com.backbase.kalah.entity.enums.PitType;
-import com.backbase.kalah.entity.enums.PlayerType;
 import com.backbase.kalah.exceptions.InvalidPitIdException;
+import com.backbase.kalah.exceptions.InvalidPlayerException;
+import com.backbase.kalah.game.enums.GameStatus;
+import com.backbase.kalah.game.enums.KalahType;
+import com.backbase.kalah.game.enums.PitType;
+import com.backbase.kalah.game.enums.Player;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 import static org.junit.Assert.*;
 
-public class BoardTest {
-    private Board board;
+public class BoardEntityTest {
+    private BoardEntity board;
 
     @Before
     public void setUp() {
-        board = new Board(1, 14, 6);
+        board = new BoardEntity(14, 6);
     }
 
     @Test
     public void testBoard() {
-        Board board = new Board(1, 14, 6);
-        assertArrayEquals(new int[]{6, 6, 6, 6, 6, 6, 0, 6, 6, 6, 6, 6, 6, 0}, board.stream().toArray());
+        BoardEntity boardEntity = new BoardEntity(14, 6);
+        assertArrayEquals(new int[]{6, 6, 6, 6, 6, 6, 0, 6, 6, 6, 6, 6, 6, 0}, boardEntity.getPits());
 
-        board = new Board(1, 6, 2);
-        assertArrayEquals(new int[]{2, 2, 0, 2, 2, 0}, board.stream().toArray());
-    }
-
-    @Test
-    public void stream() {
-        assertEquals(14, board.stream().count());
-    }
-
-    @Test
-    public void getId() {
-        assertEquals(1, board.getId());
+        boardEntity = new BoardEntity(6, 2);
+        assertArrayEquals(new int[]{2, 2, 0, 2, 2, 0}, boardEntity.getPits());
     }
 
     @Test
     public void getPlayer1LastPitIndex() {
         assertEquals(6, board.getPlayer1LastPitIndex());
-    }
-
-    @Test
-    public void getPlayer2FirstPitIndex() {
-        assertEquals(7, board.getPlayer2FirstPitIndex());
     }
 
     @Test
@@ -125,45 +113,45 @@ public class BoardTest {
         //                  {6, 6, 6, 6, 6, 6, 0, 6, 6, 6, 6, 6, 6, 0}; // initial values
         int[] moveResult1 = {0, 7, 7, 7, 7, 7, 1, 6, 6, 6, 6, 6, 6, 0}; // after move(0)
         int[] moveResult2 = {0, 0, 8, 8, 8, 8, 2, 7, 7, 6, 6, 6, 6, 0}; // after move(1)
-        int[] moveResult3 = {1, 0, 8, 8, 8, 0, 3, 8, 8, 7, 7, 7, 7, 0}; // after move(5)
-        int[] moveResult4 = {2, 1, 9, 8, 8, 0, 3, 8, 0, 8, 8, 8, 8, 1}; // after move(8)
+        int[] moveResult3 = {1, 1, 8, 8, 8, 8, 2, 7, 0, 7, 7, 7, 7, 1}; // after move(8)
+        int[] moveResult4 = {2, 1, 8, 8, 8, 0, 3, 8, 1, 8, 8, 8, 8, 1}; // after move(5)
 
         int lastStonePitId = board.move(0);
         assertEquals(6, lastStonePitId);
-        assertArrayEquals(moveResult1, board.stream().toArray());
+        assertEquals(Player.PLAYER_1, board.getNextPlayer());
+        assertArrayEquals(moveResult1, board.getPits());
 
         lastStonePitId = board.move(1);
+        board.changeNextPlayer();
         assertEquals(8, lastStonePitId);
-        assertArrayEquals(moveResult2, board.stream().toArray());
-
-        lastStonePitId = board.move(5);
-        assertEquals(0, lastStonePitId);
-        assertArrayEquals(moveResult3, board.stream().toArray());
+        assertEquals(Player.PLAYER_2, board.getNextPlayer());
+        assertArrayEquals(moveResult2, board.getPits());
 
         lastStonePitId = board.move(8);
-        assertEquals(2, lastStonePitId);
-        assertArrayEquals(moveResult4, board.stream().toArray());
+        board.changeNextPlayer();
+        assertEquals(1, lastStonePitId);
+        assertEquals(Player.PLAYER_1, board.getNextPlayer());
+        assertArrayEquals(moveResult3, board.getPits());
+
+        lastStonePitId = board.move(5);
+        board.changeNextPlayer();
+        assertEquals(0, lastStonePitId);
+        assertEquals(Player.PLAYER_2, board.getNextPlayer());
+        assertArrayEquals(moveResult4, board.getPits());
 
         int exceptionCount = 0;
 
         try {
             board.move(5);
         } catch (Exception ex) {
-            assertTrue(ex instanceof InvalidPitIdException);
+            assertTrue(ex instanceof InvalidPlayerException);
             exceptionCount++;
         }
 
         try {
             board.move(6);
         } catch (Exception ex) {
-            assertTrue(ex instanceof InvalidPitIdException);
-            exceptionCount++;
-        }
-
-        try {
-            board.move(8);
-        } catch (Exception ex) {
-            assertTrue(ex instanceof InvalidPitIdException);
+            assertTrue(ex instanceof InvalidPlayerException);
             exceptionCount++;
         }
 
@@ -174,7 +162,7 @@ public class BoardTest {
             exceptionCount++;
         }
 
-        assertEquals(4, exceptionCount);
+        assertEquals(3, exceptionCount);
     }
 
     @Test
@@ -210,10 +198,10 @@ public class BoardTest {
     @Test
     public void getPitPlayer() {
         for (int pitId = 0; pitId <= 6; pitId++)
-            assertEquals(PlayerType.PLAYER_1, board.getPitPlayer(pitId));
+            assertEquals(Player.PLAYER_1, board.getPitPlayer(pitId));
 
         for (int pitId = 7; pitId <= 13; pitId++)
-            assertEquals(PlayerType.PLAYER_2, board.getPitPlayer(pitId));
+            assertEquals(Player.PLAYER_2, board.getPitPlayer(pitId));
 
         int exceptionCount = 0;
 
@@ -259,30 +247,72 @@ public class BoardTest {
 
     @Test
     public void hasAnyStone() {
-        assertTrue(board.hasAnyStone(PlayerType.PLAYER_1));
-        assertTrue(board.hasAnyStone(PlayerType.PLAYER_2));
-
-        Board board = new Board(1, new int[]{0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 6});
-        assertFalse(board.hasAnyStone(PlayerType.PLAYER_1));
-        assertFalse(board.hasAnyStone(PlayerType.PLAYER_2));
+        assertTrue(this.board.hasAnyStone(Player.PLAYER_1));
+        assertTrue(this.board.hasAnyStone(Player.PLAYER_2));
     }
 
     @Test
     public void flushToKalah() {
-        board.flushToKalah(PlayerType.PLAYER_1);
+        board.flushToKalah(Player.PLAYER_1);
 
         IntStream.range(0, board.getPlayer1LastPitIndex()).forEach(pitId -> assertEquals(0, board.getPitValue(pitId)));
-        IntStream.range(board.getPlayer2FirstPitIndex(), board.getPlayer2LastPitIndex()).forEach(pitId -> assertEquals(6, board.getPitValue(pitId)));
+        IntStream.range(board.getPlayer1LastPitIndex() + 1, board.getPlayer2LastPitIndex()).forEach(pitId -> assertEquals(6, board.getPitValue(pitId)));
 
         assertEquals(36, board.getPitValue(board.getPlayer1LastPitIndex()));
         assertEquals(0, board.getPitValue(board.getPlayer2LastPitIndex()));
 
-        board.flushToKalah(PlayerType.PLAYER_2);
+        board.flushToKalah(Player.PLAYER_2);
 
         IntStream.range(0, board.getPlayer1LastPitIndex()).forEach(pitId -> assertEquals(0, board.getPitValue(pitId)));
-        IntStream.range(board.getPlayer2FirstPitIndex(), board.getPlayer2LastPitIndex()).forEach(pitId -> assertEquals(0, board.getPitValue(pitId)));
+        IntStream.range(board.getPlayer1LastPitIndex() + 1, board.getPlayer2LastPitIndex()).forEach(pitId -> assertEquals(0, board.getPitValue(pitId)));
 
         assertEquals(36, board.getPitValue(board.getPlayer1LastPitIndex()));
         assertEquals(36, board.getPitValue(board.getPlayer2LastPitIndex()));
+    }
+
+    @Test
+    public void getPits() {
+        assertArrayEquals(new int[]{6, 6, 6, 6, 6, 6, 0, 6, 6, 6, 6, 6, 6, 0}, board.getPits());
+    }
+
+    @Test
+    public void getNextPlayer() {
+        assertEquals(Player.PLAYER_1, board.getNextPlayer());
+    }
+
+    @Test
+    public void getStatus() {
+        assertEquals(GameStatus.RUNNING, board.getStatus());
+    }
+
+    @Test
+    public void getWinner() {
+        assertEquals(Optional.empty(), board.getWinner());
+    }
+
+    @Test
+    public void gameOver() {
+        board.gameOver();
+        assertEquals(GameStatus.GAME_OVER, board.getStatus());
+    }
+
+    @Test
+    public void setWinner() {
+        assertEquals(Optional.empty(), board.getWinner());
+
+        board.setWinner(Player.PLAYER_1);
+        assertEquals(Optional.of(Player.PLAYER_1), board.getWinner());
+
+        board.setWinner(Player.PLAYER_2);
+        assertEquals(Optional.of(Player.PLAYER_2), board.getWinner());
+    }
+
+    @Test
+    public void changeNextPlayer() {
+        assertEquals(Player.PLAYER_1, board.getNextPlayer());
+        board.changeNextPlayer();
+        assertEquals(Player.PLAYER_2, board.getNextPlayer());
+        board.changeNextPlayer();
+        assertEquals(Player.PLAYER_1, board.getNextPlayer());
     }
 }

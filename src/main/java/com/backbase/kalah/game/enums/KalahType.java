@@ -1,4 +1,4 @@
-package com.backbase.kalah.entity.enums;
+package com.backbase.kalah.game.enums;
 
 public enum KalahType {
     PLAYER_1_KALAH,

@@ -1,6 +1,6 @@
 package com.backbase.kalah.exceptions;
 
-public class InvalidPitCountException extends RuntimeException {
+public class InvalidPitCountException extends KalahException {
     public InvalidPitCountException(String message) {
         super(message);
     }

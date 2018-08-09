@@ -1,7 +1,8 @@
-package com.backbase.kalah.entity;
+package com.backbase.kalah.game;
 
 import com.backbase.kalah.exceptions.InvalidPitCountException;
 import com.backbase.kalah.exceptions.InvalidStoneCountException;
+import com.backbase.kalah.game.BoardEntity;
 import org.junit.Assume;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,7 +12,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 @RunWith(Parameterized.class)
-public class BoardInitializeTestExceptions {
+public class BoardEntityInitializeTestExceptions {
     enum Type {INVALID_PIT_COUNT_EXCEPTION, INVALID_STONE_COUNT_EXCEPTION}
 
     @Parameterized.Parameters
@@ -47,12 +48,12 @@ public class BoardInitializeTestExceptions {
     @Test(expected = InvalidPitCountException.class)
     public void testBoardCreationInvalidPitCount() {
         Assume.assumeTrue(type == Type.INVALID_PIT_COUNT_EXCEPTION);
-        new Board(id, pitCount, stoneCount);
+        new BoardEntity(pitCount, stoneCount);
     }
 
     @Test(expected = InvalidStoneCountException.class)
     public void testBoardCreationInvalidStoneCount() {
         Assume.assumeTrue(type == Type.INVALID_STONE_COUNT_EXCEPTION);
-        new Board(id, pitCount, stoneCount);
+        new BoardEntity(pitCount, stoneCount);
     }
 }
